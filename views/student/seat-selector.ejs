@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Student Dashboard</title>
+  <link rel="icon" href = "/images/favicon_title.png">
+  <link rel="stylesheet" type="text/css" href="/css/welcome.css">
+  <link rel="stylesheet" type="text/css" href="/css/mobileview.css">
+
+</head>
+<!-- Seat Selector -->
+<body style="font-family: 'Nunito', sans-serif;">
+  <!-- Side Bar -->
+  <div class="col-flex space-between left-menu-bar sideBar" style=" position:fixed; top:0;left:0;width:16%; height:100vh; background-color:#003585">
+    <div class="col-flex">
+     <div class="logo" style="margin:20px 0px 20px 20px; width:125px; height:42px;"></div>
+     <div style="height:0.5px; width:100%; background-color:rgba(255,255,255,1);"></div>
+    </div>
+    <a href="/StudentLogin" class="row-flex align-items-center" style="text-decoration:none; margin:20px 30px;">
+      <div style="width:30px;height:35px;background:url('/images/logout-icon.png');background-size:100% 100%; background-repeat: no-repeat;"></div>
+      <div style="margin-left:20px; color:white;">Logout</div>
+    </a>
+  </div>
+
+  <div class="row-flex full-width">
+   <!-- Header Mobile View -->
+   <div class="row-flex left-extra-space align-items-center space-between" style="background-color:#003585;width:16%; height:100vh; padding:0 20px;">
+      <div style="width:34px;height:24px;background:url('/images/hamburger-icon.png');background-size:100% 100%; background-repeat: no-repeat;" onClick="handleSideBar()"></div>
+      <div class="logo" style="height:42px;width:140px;"></div>
+   </div>
+   <!-- Seat Select Column -->
+   <div class="col-flex align-items-center main-dashboard" style="width:84%;background-color:#fafafa;">
+     <div class="col-flex" style="box-shadow:0 0 10px 0 rgba(0,0,0,0.2); width:96%;height:auto;margin:20px auto; border-radius:10px; backgroud-color:white;">
+      <div class="row-flex align-items-center space-evenly" style="width:100%; height:100px;border-bottom:1px solid rgba(0,0,0,0.4);font-size:30px; font-weight:500;">
+         Select your Seat
+      </div>
+      <form action="/SelectSeat" method="post" class="col-flex full-width">
+        <input type="text" style="display:none;" name="studentID" value=<%= StudentID %>></input>
+        <input type="text" style="display:none;" name="studentName" value=<%= StudentName.replace(/ /g,"_") %>></input>
+       <div style="max-width:100%; overflow:auto;">
+
+        <!-- Seats Row -->
+        <div class="row-flex flex-wrap align-items-center" style="width:540px;margin:0 auto; margin-top:40px;">
+          <% SeatsArray.forEach( function(seat,index){ %>
+            <% if(seat === 0){%>
+            <!-- If seat is empty -->
+              <div class="" style="position:relative; margin: 19px 20px 14px 20px;">
+                <div class="num number" id="number-<%= 18-index %>" style="cursor:pointer;position:absolute; top:8px; left:18px; font-size:20px;" onClick="selectSeat(<%= 18 -index %>)"><%= 18-index %></div>
+                <input class='radio-button' type="radio" id="<%= 18- index %>" name="seatNumber" value=<%= 18 - index %> oninput="handleSelect(<%= 18-index %>)"></input>
+                
+              </div>
+            <% } else if(seat === -1) {%>
+            <!-- If seat is filled -->
+              <div style="margin:14px 20px 15px 20px;">
+                <div class='unavailable-seat row-flex space-evenly align-items-center' style="font-size:20px;" id=""+<%= 18-index %>+""><%= 18-index%></div>
+              </div>
+            <% } else if( seat === 1) {%>
+            <!-- If seat is unavailable -->
+              <div style="margin:14px 20px 15px 20px;">
+                <div class='filled-seat row-flex space-evenly align-items-center' style="font-size:20px;" id=""+<%= 18-index %>+""><%= 18-index %></div>
+              </div>
+            <% }
+          }); %>
+        </div>
+        </div>
+        <div class="row-flex align-items-center space-evenly width100" style="font-size:20px;width:700px;height:40px;border:1px solid rgba(0,0,0,0.4);margin:0 auto; margin-top:30px;">
+          Professor & White Board
+        </div>
+        <div style="background-color:rgba(0,0,0,0.4); width:100%;height:1px;"></div>
+        <div class="row-flex space-evenly align-items-center" style="width:100%; height:90px">
+          <input type="submit" value="Submit" style="width:120px;height:40px;border-radius:10px;border: 2px solid #003585;color:white; background-color:#003585;"></input>
+        </div>
+      </form>    
+    </div>
+     <!-- Description of seats color -->
+     <div class="row-flex flex-wrap align-items-center space-evenly full-width">
+       <div class="row-flex align-items-center" style="margin-top:20px;">
+         <div style="width:40px; height: 40px; border:1px solid black; background-color: rgba(0,53,133,0.8);"></div>
+         <div style="margin-left: 15px;">Selected Seat</div>
+       </div>
+       <div class="row-flex align-items-center" style="margin-top:20px;">
+         <div style="width:40px; height: 40px; border:1px solid black; background-color: rgba(93,245,66,1);"></div>
+         <div style="margin-left: 15px;">Filled Seats</div>
+       </div>
+       <div class="row-flex align-items-center" style="margin-top:20px;">
+         <div style="width:40px; height: 40px; border:1px solid black; background-color: rgba(255,0,0,0.8);"></div>
+         <div class="col-flex" style="margin-left: 15px;">
+           <div>Unavailable Seats</div>
+           <div style="color:rgba(0,0,0,0.4);font-size:14px;">(Due to Covid Precautions)</div>
+         </div>
+       </div>
+     </div>
+     <div class="error-message" style="margin-top:20px;color:red;width:100%;text-align:center;"></div>
+   </div>
+  </div>
+  <script>
+
+  function selectSeat(val){
+    document.getElementById(val).checked = true;
+    handleSelect(val);
+  }
+
+  function handleSelect(val){
+    var allNumber = document.getElementsByClassName('num');
+
+    for(var i = 0 ; i < allNumber.length; i++){
+      allNumber[i].classList.add('number');
+    }
+
+    document.getElementById("number-"+val).classList.remove('number');
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  var val = params.get('a');
+  if(val === "SeatAlreadyFilled"){
+    document.getElementsByClassName('error-message')[0].innerHTML = 'Someone else has filled the Seat!';
+  } else if(val === "NotRegistered"){
+    document.getElementsByClassName('error-message')[0].innerHTML = 'User Not Registered';
+  } else if(val === "dbError"){
+    document.getElementsByClassName('error-message')[0].innerHTML = 'Server Error, Try again later';
+  } else {
+    document.getElementsByClassName('error-message')[0].innerHTML = '';
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Faculty Dashboard</title>
+  <link rel="icon" href = "/images/favicon-title.png">
+  <link rel="stylesheet" type="text/css" href="/css/welcome.css">
+  <link rel="stylesheet" type="text/css" href="/css/mobileview.css">
+</head>
+<!-- Faculty's Dashboard -->
+<body style="font-family: 'Nunito', sans-serif;">
+  
+  <!-- Tags for fetching number of offline/online students in js -->
+  <span id="offline" style="display:none;"><%= Offline %></span>
+  <span id="online" style="display:none;"><%= Online %></span>
+
+  <!-- Screen for closing side bar in mobile view -->
+  <div id="newScreen" style="width:100%;height:100vh;position:fixed; background-color:rgba(255,255,255,0.6);z-index:1000;display:none;" onClick="closeSideBar()"></div>
+  
+  <!-- Side Bar -->
+  <div class="col-flex space-between left-menu-bar sideBar" style="position:fixed; top:0;left:0;width:16%; height:100vh; background-color:#003585">
+    <div class="col-flex">
+     <div class="logo" style="margin:20px 0px 20px 20px; width:125px; height:42px;"></div>
+     <div style="height:0.5px; width:100%; background-color:rgba(255,255,255,1);"></div>
+     <div class="col-flex" style="margin:120px 0 0 30px; font-size:20px;">
+      <div id="Dashboard-select" class="option row-flex align-items-center" style="position:relative;height:46px; cursor:pointer; text-decoration:none;" onClick="SelectMenu('Dashboard')">
+        <div style="width:32px;height:26px;background:url('/images/dashboard-icon.png');background-size:100% 100%; background-repeat: no-repeat;"></div>
+        <div style="color:white;font-weight:bold; margin-left:20px;">Dashboard</div>
+        <div id="Dashboard-left-bar" class="bar" style="position:absolute; left:-38px;top:0; height:46px;width:16px;border-radius:8px;background-color:white;"></div>
+      </div>
+      <div id="Analyse-select" class="option row-flex align-items-center" style="position:relative;margin-top:30px;height:46px;opacity:0.5;cursor:pointer; text-decoration:none;" onClick="SelectMenu('Analyse')">
+        <div style="width:32px;height:26px;background:url('/images/analyse-icon.png');background-size:100% 100%; background-repeat: no-repeat;"></div>
+        <div style="color:white;margin-left:20px;">Vaccination Analysis</div>
+        <div id="Analyse-left-bar" class="bar" style="display:none;position:absolute; left:-38px;top:0; height:46px;width:16px;border-radius:8px;background-color:white;"></div>
+      </div>
+      <div id="Annoucement-select" class="option row-flex align-items-center" style="position:relative;margin-top:30px;height:46px;opacity:0.5;cursor:pointer;text-decoration:none;" onClick="SelectMenu('Annoucement')">
+        <div style="width:32px;height:26px;background:url('/images/announcement-icon.png');background-size:100% 100%; background-repeat: no-repeat;"></div>
+        <div style="color:white;margin-left:20px;">Announcements</div>
+        <div id="Annoucement-left-bar" class="bar" style="display:none;position:absolute; left:-38px;top:0; height:46px;width:16px;border-radius:8px;background-color:white;"></div>
+      </div>
+     </div>
+    </div>
+    <a href="/FacultyLogin" class="row-flex align-items-center" style="text-decoration:none; margin:20px 30px;">
+      <div style="width:30px;height:35px;background:url('/images/logout-icon.png');background-size:100% 100%; background-repeat: no-repeat;"></div>
+      <div style="margin-left:20px; color:white;">Logout</div>
+    </a>
+  </div>
+
+  <div class="row-flex full-width">
+   <!-- Header Mobile View -->
+   <div class="row-flex left-extra-space align-items-center space-between" style="background-color:#003585;width:16%; height:100vh; padding:0 20px;">
+      <div style="width:34px;height:24px;background:url('/images/hamburger-icon.png');background-size:100% 100%; background-repeat: no-repeat;" onClick="handleSideBar()"></div>
+      <div class="logo" style="height:42px;width:140px;"></div>
+   </div>
+   <div class="col-flex align-items-center main-dashboard" style="width:84%;min-height:100vh;background-color:#fafafa;">
+    
+    <!-- Main Dashboard -->
+    <div id="Dashboard" class="col-flex menu" style="width:96%;">
+      
+      <!-- Welcome Column -->
+      <div class="row-flex space-between align-items-center row-to-col" style="margin-top:20px;width:100%; background-color:white;height:280px; border-radius:20px; box-shadow: 0 0 20px 0 rgba(0,0,0,0.075);">
+        <div class="col-flex space-evenly margin0" style="height:92%; margin:0 10px 0 26px;">
+          <div class="col-flex">
+            <div class="font20" style="font-size:30px;">Welcome back, <span style="font-weight:bold;"><%= Name %>!</span></div>
+            <div style="font-size:30px;"></div>
+          </div>
+        </div>
+        <div class="mobile-dashboard-image" style="width:40%;height:92%;background:url('/images/dashboard-front-image.png');background-size:100% 100%; background-repeat: no-repeat; margin: 0 20px 0 10px;"></div>
+      </div>
+
+      <div class="row-flex space-between row-to-col" style="width:100%; margin:0 0 35px 0;">
+        <!-- Student Preference Column -->
+        <div class="col-flex width100 height-auto" style="width:58.4%; margin: 35px 0 0 0; background-color:white;height:480px; border-radius:20px; box-shadow: 0 0 20px 0 rgba(0,0,0,0.075);">
+            
+            <div class="row-flex align-items-center font20" style="height:80px;font-size:24px; font-weight:500; margin-left:30px;">Students Prefrences for next week(<span id="date1"></span>&nbsp; to&nbsp; <span id="date2"></span>)</div>
+            <div style="height:1px;width:100%; background-color: rgba(0,0,0,0.4)"></div>
+            
+            <!-- If no one has filled the preference -->
+            <% if(NoOneFilled){ %>
+            <div style="margin: 50px 30px; font-size:26px;color:#003585">No one has filled the Preference yet.</div>
+            <% }
+            else{ %>
+            <!-- If anyone has filled the preference -->
+            <div class="row-flex align-items-center row-to-colreverse" style="margin-top:26px;">
+            <div class="col-flex space-between col-to-row width94 margin0" style="height:170px;width:50%; margin-left:30px; font-size:24px;">
+              <div class="font18" class="col-flex width-auto">
+                <div style="color:rgba(255, 50, 80, 1);">Offline Attendees: <span><%= Offline %></span></div>
+                <div style="color:rgba(54, 122, 255, 1);">Online Attendees: <span><%= Online %></span></div>
+              </div>
+              <div class="row-flex space-evenly align-items-center font18 button" style="width:210px; height:50px; border-radius:10px; border:2px solid rgba(0, 53, 133, 1);background-color:rgba(0, 53, 133, 0.8);color:white;cursor:pointer;" onClick="SelectMenu('Analyse')">Student Database</div>
+            </div>
+            <div class="col-flex" style="margin:20px 20px 0 0;">
+              <canvas id="myChart" width="300" height="300"></canvas>
+            </div>
+            </div>
+            <% } %>
+        </div>
+
+        <!-- All Students Column -->
+        <div class="col-flex width100" style="width:38.4%; background-color:white;height:480px; border-radius:20px; box-shadow: 0 0 20px 0 rgba(0,0,0,0.075); margin: 35px 0 0 0;">
+          <div class="col-flex">
+            <div class="row-flex align-items-center" style="height:80px;font-size:24px; font-weight:500; margin-left:20px;">My Students</div>
+            <div style="height:1px;width:100%; background-color: rgba(0,0,0,0.4)"></div>
+            <div class="col-flex" style="margin:20px 30px;max-height:380px; overflow:auto;">
+              <% for(var i = 0 ; i < AllStudents.length ; i=i+3) { %>
+              <div class="row-flex align-items-center space-between" style="font-size:20px; margin-top:20px;">
+                <div class="row-flex align-items-center">
+                  <div class="row-flex space-evenly align-items-center" style="width:50px; height:50px;border-radius:50%;border:3px solid #003585; color:#003585;font-weight:bold;"><%= AllStudents[i].FirstName[0] %></div>
+                  <div style="margin-left:10px;color:#003585;"><%= AllStudents[i].FirstName %> <%= AllStudents[i].LastName %></div>
+                </div>
+                <div style="color:rgba(0,0,0,0.4)"><%= AllStudents[i].StudentID %></div>
+              </div>
+              <% if(i+1 < AllStudents.length){ %>
+              <div class="row-flex align-items-center space-between" style="font-size:20px; margin-top:20px;">
+                <div class="row-flex align-items-center">
+                  <div class="row-flex space-evenly align-items-center" style="width:50px; height:50px;border-radius:50%;border:3px solid orange; color:orange;font-weight:bold;"><%= AllStudents[i+1].FirstName[0] %></div>
+                  <div style="margin-left:10px;color:orange;"><%= AllStudents[i+1].FirstName %> <%= AllStudents[i+1].LastName %></div>
+                </div>
+                <div style="color:rgba(0,0,0,0.4)"><%= AllStudents[i+1].StudentID %></div>
+              </div>
+              <% } 
+              if(i+2 < AllStudents.length){%>
+
+              <div class="row-flex align-items-center space-between" style="font-size:20px; margin-top:20px;">
+                <div class="row-flex align-items-center">
+                  <div class="row-flex space-evenly align-items-center" style="width:50px; height:50px;border-radius:50%;border:3px solid purple; color:purple;font-weight:bold;"><%= AllStudents[i+2].FirstName[0] %></div>
+                  <div style="margin-left:10px;color:purple;"><%= AllStudents[i+2].FirstName %> <%= AllStudents[i+2].LastName %></div>
+                </div>
+                <div style="color:rgba(0,0,0,0.4)"><%= AllStudents[i+2].StudentID %></div>
+              </div>
+              <% } 
+              }%>
+            </div>
+          </div>
+        </div>   
+      </div>
+      </div>
+
+      <!-- Analysis Page -->
+      <div id="Analyse" class="col-flex menu space-evenly" style="display:none;width:96%;height:100%">
+        <div class="col-flex height-auto" style="margin-top:20px;width:100%; background-color:white;height:94%; border-radius:20px; box-shadow: 0 0 20px 0 rgba(0,0,0,0.075);">
+          
+          <div class="row-flex align-items-center space-evenly full-width" style="margin-top:30px;">
+            <!-- Tab switching between preference filled and all students -->
+            <div class="row-flex align-items-center">
+              <div id="Filled" class="row-flex align-items-center space-evenly font18 width140" style="font-size:26px; color:#003585; width:200px;border-bottom:4px solid #003585; margin:0 30px;cursor:pointer;" onClick="SelectAnalyseOption('Filled')">Preference Filled</div>
+              <div id="All" class="row-flex align-items-center space-evenly font18 width140" style="font-size:26px; color:#003585; width:200px;margin:0 30px;cursor:pointer;" onClick="SelectAnalyseOption('All')">All Students</div>
+            </div>
+          </div>
+          
+          <!-- If No one have filled the preference for next week -->
+          <% if(AllPreference.length === 0){ %>
+          <div id="Filled-students" class="col-flex" style="align-self:center;font-size:30px; width:85%;color:black;margin-top:100px">No one has filled the Preference yet.</div>
+          <% } else { %>
+          <!-- Table of students who have filled the preference for next week -->
+          <div id="Filled-students" class="col-flex width96 AllPreference-mobile" style="align-self:center;width:80%;margin:50px 30px;max-height:580px; overflow:auto; border:1px solid rgba(0,0,0,0.4);border-radius:10px;">
+
+            <!-- Table Header -->        
+            <div class="row-flex align-items-center space-between" style="font-size:20px; margin:30px 30px; font-weight:bold;">
+              <div class="row-flex align-items-center">
+                <div style="color:#003585;">#</div>
+                <div class="row-flex align-items-center width200" style="font-weight:bold; margin-left:44px;">Name</div>
+              </div>
+              <div class="row-flex align-items-center" style="color:rgba(0,0,0,1)">
+                <div style="text-align:right;margin-right:60px;width:200px;">Vaccination Status</div>
+                <div style="text-align:right;width:260px">Preference/Seat Number</div>
+              </div>
+            </div>
+            
+            <!-- Table Data -->
+            <% for(var i = 0 ; i < AllPreference.length ; i=i+3) { %>
+            <div class="mobile-display-none" style="height:1px;width:100%;background-color: rgba(0,0,0,0.4)"></div>
+            <div class="row-flex align-items-center space-between" style="font-size:20px; margin:30px 30px;">
+              <div class="row-flex align-items-center">
+                <div style="color:#003585;"><%= i+1 %>.</div>
+                <div class="row-flex space-evenly align-items-center" style="width:50px; height:50px;border-radius:50%;border:3px solid #003585; color:#003585;font-weight:bold;margin-left:40px;"><%= AllPreference[i].StudentName[0] %></div>
+                <div class="width140" style="margin-left:10px;color:#003585;"><%= AllPreference[i].StudentName %></div>
+              </div>
+              <div class="row-flex align-items-center" style="color:rgba(0,0,0,0.4);">
+                <div style="text-align:right;margin-right:60px;width:200px;">
+                  <% if(AllPreference[i].VaccinationStatus === 'Fully Vaccinated'){ %>
+                    Fully Vaccinated
+                  <% } else if(AllPreference[i].VaccinationStatus === 'Dose 1'){%>
+                    Dose 1
+                  <% } else { %>
+                    Not Vaccinated
+                  <% } %>
+                </div>
+                <div style="text-align:right;width:260px;">
+                <% if(AllPreference[i].isOffline){ %>
+                  Offline / <%= AllPreference[i].SeatNumber %>
+                <% } else {%>
+                  Online / N.A.
+                <% } %>
+                </div>
+              </div>
+            </div>
+            <% if(i+1 < AllPreference.length){ %>
+            <div class="mobile-display-none" style="height:1px;width:100%;background-color: rgba(0,0,0,0.2)"></div>
+            <div class="row-flex align-items-center space-between" style="font-size:20px; margin:30px 30px;">
+              <div class="row-flex align-items-center">
+                <div style="color:orange;"><%= i+2 %>.</div>
+                <div class="row-flex space-evenly align-items-center" style="width:50px; height:50px;border-radius:50%;border:3px solid orange; color:orange;font-weight:bold;margin-left:40px;"><%= AllPreference[i+1].StudentName[0] %></div>
+                <div class="width140" style="margin-left:10px;color:orange;"><%= AllPreference[i+1].StudentName %></div>
+              </div>
+              <div class="row-flex align-items-center" style="color:rgba(0,0,0,0.4);">
+                <div style="text-align:right;margin-right:60px;width:200px;">
+                  <% if(AllPreference[i+1].VaccinationStatus === 'Fully Vaccinated'){ %>
+                    Fully Vaccinated
+                  <% } else if(AllPreference[i+1].VaccinationStatus === 'Dose 1'){%>
+                    Dose 1
+                  <% } else { %>
+                    Not Vaccinated
+                  <% } %>
+                </div>
+                <div style="text-align:right;width:260px;">
+                <% if(AllPreference[i+1].isOffline){ %>
+                  Offline / <%= AllPreference[i+1].SeatNumber %>
+                <% } else {%>
+                  Online / N.A.
+                <% } %>
+                </div>
+              </div>  
+            </div>
+            <% } 
+            if(i+2 < AllPreference.length){%>
+            <div class="mobile-display-none" style="height:1px;width:100%;background-color: rgba(0,0,0,0.4)"></div>
+            <div class="row-flex align-items-center space-between" style="font-size:20px; margin:30px 30px;">
+              <div class="row-flex align-items-center">
+                <div style="color:purple;"><%= i+3 %>.</div>
+                <div class="row-flex space-evenly align-items-center" style="width:50px; height:50px;border-radius:50%;border:3px solid purple; color:purple;font-weight:bold;margin-left:40px;"><%= AllPreference[i+2].StudentName[0] %></div>
+                <div class="width140" style="margin-left:10px;color:purple;"><%= AllPreference[i+2].StudentName %></div>
+              </div>
+              <div class="row-flex align-items-center" style="color:rgba(0,0,0,0.4);">
+                <div style="text-align:right;margin-right:60px; width:200px;">
+                  <% if(AllPreference[i+2].VaccinationStatus === 'Fully Vaccinated'){ %>
+                    Fully Vaccinated
+                  <% } else if(AllPreference[i+2].VaccinationStatus === 'Dose 1'){%>
+                    Dose 1
+                  <% } else { %>
+                    Not Vaccinated
+                  <% } %>
+                </div>
+                <div style="text-align:right;width:260px;">
+                <% if(AllPreference[i+2].isOffline){ %>
+                  Offline / <%= AllPreference[i+2].SeatNumber %>
+                <% } else {%>
+                  Online / N.A.
+                <% } %>
+                </div>
+              </div>  
+            </div>
+            <% } 
+            }%>
+          </div>
+          <% } %>
+          
+          <!-- All Students table -->
+          <div id="All-students" class="col-flex width96 AllStudents-mobile" style="display:none;align-self:center;width:80%;margin:50px 30px;max-height:580px; overflow:auto; border:1px solid rgba(0,0,0,0.4);border-radius:10px;">
+   
+            <!-- Table Header -->
+            <div class="row-flex align-items-center space-between" style="font-size:20px; margin:30px 30px; font-weight:bold;">
+              <div class="row-flex align-items-center">
+                <div style="color:#003585;">#</div>
+                <div class="row-flex space-evenly align-items-center" style="font-weight:bold; margin-left:40px;">Name</div>
+              </div>
+              <div style="color:rgba(0,0,0,1)">StudentID</div>
+            </div>
+            
+            <!-- Table Date -->
+            <% for(var i = 0 ; i < AllStudents.length ; i=i+3) { %>
+            <div class="mobile-display-none" style="height:1px;width:100%;background-color: rgba(0,0,0,0.4)"></div>
+            <div class="row-flex align-items-center space-between" style="font-size:20px; margin:30px 30px;">
+              <div class="row-flex align-items-center">
+                <div style="color:#003585;"><%= i+1 %>.</div>
+                <div class="row-flex space-evenly align-items-center" style="width:50px; height:50px;border-radius:50%;border:3px solid #003585; color:#003585;font-weight:bold;margin-left:40px;"><%= AllStudents[i].FirstName[0] %></div>
+                <div style="margin-left:10px;color:#003585;"><%= AllStudents[i].FirstName %> <%= AllStudents[i].LastName %></div>
+              </div>
+              <div style="color:rgba(0,0,0,0.4)"><%= AllStudents[i].StudentID %></div>
+            </div>
+            <% if(i+1 < AllStudents.length){ %>
+            <div class="mobile-display-none" style="height:1px;width:100%;background-color: rgba(0,0,0,0.2)"></div>
+            <div class="row-flex align-items-center space-between" style="font-size:20px; margin:30px 30px;">
+              <div class="row-flex align-items-center">
+                <div style="color:orange;"><%= i+2 %>.</div>
+                <div class="row-flex space-evenly align-items-center" style="width:50px; height:50px;border-radius:50%;border:3px solid orange; color:orange;font-weight:bold;margin-left:40px;"><%= AllStudents[i+1].FirstName[0] %></div>
+                <div style="margin-left:10px;color:orange;"><%= AllStudents[i+1].FirstName %> <%= AllStudents[i+1].LastName %></div>
+              </div>
+              <div style="color:rgba(0,0,0,0.4)"><%= AllStudents[i+1].StudentID %></div>
+            </div>
+            <% } 
+            if(i+2 < AllStudents.length){%>
+            <div class="mobile-display-none" style="height:1px;width:100%;background-color: rgba(0,0,0,0.4)"></div>
+            <div class="row-flex align-items-center space-between" style="font-size:20px; margin:30px 30px;">
+              <div class="row-flex align-items-center">
+                <div style="color:purple;"><%= i+3 %>.</div>
+                <div class="row-flex space-evenly align-items-center" style="width:50px; height:50px;border-radius:50%;border:3px solid purple; color:purple;font-weight:bold;margin-left:40px;"><%= AllStudents[i+2].FirstName[0] %></div>
+                <div style="margin-left:10px;color:purple;"><%= AllStudents[i+2].FirstName %> <%= AllStudents[i+2].LastName %></div>
+              </div>
+              <div style="color:rgba(0,0,0,0.4)"><%= AllStudents[i+2].StudentID %></div>
+            </div>
+            <% } 
+            }%>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Announcement -->
+      <div id="Annoucement" class="col-flex menu" style="width:96%; display:none;">
+        <div class="col-flex" style="margin-top:20px;width:100%; background-color:white;height:280px; border-radius:20px; box-shadow: 0 0 20px 0 rgba(0,0,0,0.075);">
+
+        <!-- Make Announcement Column -->
+        <div class="row-flex align-items-center" style="height:80px;font-size:24px; font-weight:500; margin-left:20px;">Make an Announcement</div>
+        <div style="height:1px;width:100%; background-color: rgba(0,0,0,0.4)"></div>
+        
+        <form action="/MakeAnnoucement" method="post" class="col-flex align-items-center" style="width:100%;">
+          <input type="text" style="display:none;" name="facultyName" value=<%= Name.replace(/ /g,"_") %>></input>
+          <input type="text" style="display:none;" name="facultyID" value=<%= FacultyID %>></input>
+          <input type="text" name="message" style="width:96%;margin:40px 0; border:1px solid rgba(0,0,0,0.4); border-radius:5px;outline:none;height:80px;" placeholder="Enter your message here"></input>
+          <input type="submit" style="margin: 0 0 20px 0; width:120px; height:34px;border-radius:10px; border:2px solid rgba(0, 53, 133, 1);background-color:rgba(0, 53, 133, 0.8);color:white;" value="Announce"></input>
+        </form>
+
+        </div>
+        
+        <!-- All Announcements Column -->
+        <div class="col-flex" style="margin-top:30px;width:100%; background-color:white;height:280px; border-radius:20px;height:480px; box-shadow: 0 0 20px 0 rgba(0,0,0,0.075);">
+
+        <div class="row-flex align-items-center" style="height:80px;font-size:24px; font-weight:500; margin-left:20px;">All Announcements</div>
+        <div style="height:1px;width:100%; background-color: rgba(0,0,0,0.4)"></div>
+        
+        <div class="col-flex" style="margin-top:10px;max-height:360px;overflow:auto">
+        <!-- If no announcement is made yet -->
+        <% if(Annoucements.length === 0){ %>
+          <div style="font-size:26px;margin:30px 30px;">No Announcement is made yet</div>
+         <% } else {
+          for(var i = Annoucements.length-1 ; i>= 0 ; i=i-3) { %>
+        <!-- Else if any announcement is there -->
+          <div class="col-flex" style="margin:25px 30px;">
+            <div class="row-flex align-items-center" style="color:#003585;">
+                <div class="row-flex space-evenly align-items-center" style="width:50px; height:50px;border-radius:50%;border:3px solid #003585; color:#003585;font-weight:bold;font-size:26px;"><%= Annoucements[i].Name[0] %></div>
+                <div class="col-flex" style="margin-left: 20px;">
+                  <div style="font-weight:600;font-size:20px;"><%= Annoucements[i].Name %></div>
+                  <div style="font-weight:300;font-size:12px;"><%= Annoucements[i].date %></div> 
+                </div>
+            </div>
+            <div style="margin-top:10px;"><%= Annoucements[i].message %></div>
+          </div>
+          <% if(i-1 >= 0){ %>
+          <div class="col-flex" style="margin:25px 30px;">
+            <div class="row-flex align-items-center" style="color:orange;">
+                <div class="row-flex space-evenly align-items-center" style="width:50px; height:50px;border-radius:50%;border:3px solid orange;font-weight:bold;font-size:26px;"><%= Annoucements[i-1].Name[0] %></div>
+                <div class="col-flex" style="margin-left: 20px;">
+                  <div style="font-weight:600;font-size:20px;"><%= Annoucements[i-1].Name %></div>
+                  <div style="font-weight:300;font-size:12px;"><%= Annoucements[i-1].date %></div> 
+                </div>
+            </div>
+            <div style="margin-top:10px;"><%= Annoucements[i-1].message %></div>
+          </div>
+          <% } 
+          if(i-2 >= 0){%>
+          <div class="col-flex" style="margin:25px 30px;">
+            <div class="row-flex align-items-center" style="color:purple;">
+                <div class="row-flex space-evenly align-items-center" style="width:50px; height:50px;border-radius:50%;border:3px solid purple;font-weight:bold;font-size:26px;"><%= Annoucements[i-2].Name[0] %></div>
+                <div class="col-flex" style="margin-left: 20px;">
+                  <div style="font-weight:600;font-size:20px;"><%= Annoucements[i-2].Name %></div>
+                  <div style="font-weight:300;font-size:12px;"><%= Annoucements[i-2].date %></div> 
+                </div>
+            </div>
+            <div style="margin-top:10px;"><%= Annoucements[i-2].message %></div>
+          </div>
+
+          <% } 
+           } 
+          } %>
+        </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Script of Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.0/dist/chart.min.js" integrity="sha256-7lWo7cjrrponRJcS6bc8isfsPDwSKoaYfGIHgSheQkk=" crossorigin="anonymous"></script>
+  <!-- Faculty Dashboard Script -->
+  <script>
+  
+  function handleSideBar(){
+    document.getElementsByClassName('sideBar')[0].style.display = "block";
+    document.getElementById('newScreen').style.display = "block";
+  }
+
+  function closeSideBar(){
+    document.getElementsByClassName('sideBar')[0].classList.add('close-move');
+    document.getElementById('newScreen').style.display = "none";
+    setTimeout(() => {
+      document.getElementsByClassName('sideBar')[0].classList.remove('close-move');
+      document.getElementsByClassName('sideBar')[0].style.display = "none";
+    },400)
+  }
+  
+  var d = new Date();
+  d.setDate(d.getDate() + (((1 + 7 - d.getDay()) % 7) || 7));
+  var date1 =  d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+  document.getElementById('date1').innerHTML = date1;
+
+  d.setDate(d.getDate() + 6);
+  var date2 = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+  document.getElementById('date2').innerHTML = date2;
+ 
+  var offline = parseInt(document.getElementById('offline').innerHTML);
+  var online = parseInt(document.getElementById('online').innerHTML);
+  var dataArr = [offline, online];
+  
+  if( offline !== 0 || online !== 0){
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Offline', 'Online'],
+            datasets: [{
+                label: 'No of Students',
+                data: dataArr,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {          
+            scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: {
+                    display: false
+                  }
+                },
+                x: {
+                  grid: {
+                    display: false
+                  }
+                }
+            },
+            plugins:{
+              legend: {
+                display: false
+              }
+            }
+        }
+    });
+  }
+ 
+  const params = new URLSearchParams(window.location.search);
+  var val = params.get('a');
+  
+  var allMenu = document.getElementsByClassName('menu');
+
+  for(var i = 0 ; i < allMenu.length ; i++){
+    allMenu[i].style.display = "none";
+  }
+ 
+
+  var allOptions = document.getElementsByClassName('option');
+
+  for(var i = 0 ; i < allOptions.length ; i++){
+    allOptions[i].style.opacity = 0.5;
+  }
+
+  var allBar = document.getElementsByClassName('bar');
+
+ for(var i = 0 ; i < allBar.length ; i++){
+    allBar[i].style.display = "none";
+  }
+
+  if(val !== null){
+   document.getElementById(val).style.display = "block";
+    document.getElementById(val+"-select").style.opacity = 1;
+    document.getElementById(val+"-left-bar").style.display = "block";
+  } else {
+    document.getElementById('Dashboard').style.display = "block";
+    document.getElementById("Dashboard-select").style.opacity = 1;
+   document.getElementById("Dashboard-left-bar").style.display = "block";
+  }
+  
+  function SelectMenu(value){
+    var allMenu = document.getElementsByClassName('menu');
+
+    for(var i = 0 ; i < allMenu.length ; i++){
+      allMenu[i].style.display = "none";
+    }
+
+    var allOptions = document.getElementsByClassName('option');
+
+    for(var i = 0 ; i < allOptions.length ; i++){
+      allOptions[i].style.opacity = 0.5;
+    }
+
+    var allBar = document.getElementsByClassName('bar');
+
+    for(var i = 0 ; i < allBar.length ; i++){
+      allBar[i].style.display = "none";
+    }
+
+    document.getElementById(value).style.display = "block";
+    document.getElementById(value+"-select").style.opacity = 1;
+    document.getElementById(value+"-left-bar").style.display = "block";
+  }
+
+  function SelectAnalyseOption(value){
+    if(value === 'All'){
+      document.getElementById('All-students').style.display = "block";
+      document.getElementById('Filled-students').style.display = "none";
+      document.getElementById('All').style.borderBottom = "4px solid #003585";
+      document.getElementById('Filled').style.borderBottom = "0";
+    } else {
+      document.getElementById('All-students').style.display = "none";
+      document.getElementById('Filled-students').style.display = "block";
+      document.getElementById('Filled').style.borderBottom = "4px solid #003585";
+      document.getElementById('All').style.borderBottom = "0";
+    }
+  }
+  </script>
+</body>
+</html>
